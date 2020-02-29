@@ -1,7 +1,7 @@
+require('dotenv').config();
 const express = require('express');
 const fetch = require('node-fetch');
-const Twit = require('twit');
-require('dotenv').config();
+const twitter = require('./twitter-manager');
 
 const app = express();
 
@@ -12,26 +12,9 @@ app.get('/', (req, res) => {
     res.send('Getting root... Yam yam yam!');
 });
 
-var T = new Twit({
-    consumer_key: process.env.TWITTER_CONSUMER_KEY,
-    consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
-    access_token: process.env.TWITTER_ACCESS_TOKEN,
-    access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
-    timeout_ms: 60 * 1000,  // optional
-    strictSSL: true,        // optional
-})
-
-T.get('search/tweets', {
-    q: '#javascript AND -filter:replies AND -filter:retweets',
-    tweet_mode: 'extended',
-    lang: 'en',
-    result_type: 'recent',
-    count: 2
-},
-    function (err, data, response) {
-        console.log(data)
-    }
-)
+twitter.getTweets('#javascript AND -filter:replies AND -filter:retweets', 3, (err, data, response) => {
+    console.log(data);
+});
 
 /////////////////////////////////
 // --- STARTING THE SERVER --- //
