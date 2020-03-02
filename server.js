@@ -20,6 +20,7 @@ twitter.getTweets('#javascript AND -filter:replies AND -filter:retweets', 3, (er
 });
 
 async function runEsExample() {
+    // Deleting all indices from ES
     await esClient.deleteByQuery({
         index: '_all',
         body: {
@@ -65,7 +66,11 @@ async function runEsExample() {
         body: {
             query: {
                 match: {
-                    quote: 'dragon'
+                    quote: {
+                        query: 'books needs',
+                        operator : "and"
+                    }
+                    
                 }
             }
         }
