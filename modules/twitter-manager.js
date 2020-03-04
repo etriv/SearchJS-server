@@ -1,5 +1,6 @@
 const Twit = require('twit');
 
+// Config twitter API access
 var twitterApi = new Twit({
     consumer_key: process.env.TWITTER_CONSUMER_KEY,
     consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
@@ -15,6 +16,9 @@ exports.getTweets = (query, count, callback) => {
         tweet_mode: 'extended',
         lang: 'en',
         result_type: 'recent',
-        count: count
+        count: count,
+        // since_id: "1235290256569704448"
     }, callback)
 }
+
+// TODO: Write a proccess that will run every 6 seconds, getting new tweets (since last id_str), updating DB, and then ES.
