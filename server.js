@@ -3,6 +3,7 @@ const express = require('express');
 const fetch = require('node-fetch');
 const twitter = require('./modules/twitter-manager');
 const esTweets = require('./modules/esTweets-manager');
+const dbTwitter = require('./modules/dbTweets-manager');
 
 const app = express();
 
@@ -14,15 +15,22 @@ app.get('/', (req, res) => {
 });
 
 let twitterQuery = '#javascript AND -filter:replies AND -filter:retweets';
-twitter.getTweets(twitterQuery, 100, (err, data, response) => {
-    // console.log('Example tweet:', data.statuses[0].full_text);
-    console.log('Tweets found', data.statuses.count);
+twitter.getTweets(twitterQuery, 5, '0', (tweets) => {
+    console.log('Tweets found', tweets.length);
 
-    esTweets.deleteAllTweets()
-    .then(() => esTweets.insertTweets(data.statuses))
-    .then(() => esTweets.searchTweets('code'))
-    .then(() => esTweets.printAllTweets());
+    dbTwitter.insertTweets(tweets).then(() => {
+        dbTwitter.getLastTweetIdStr().then((data) => console.log(data));
+    });
+
+    // esTweets.deleteAllTweets()
+    // .then(() => esTweets.insertTweets(tweets))
+    // .then(() => esTweets.searchTweets('code'))
+    // .then(() => esTweets.printAllTweets());
 });
+
+
+
+
 
 /////////////////////////////////
 // --- STARTING THE SERVER --- //

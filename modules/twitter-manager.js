@@ -10,15 +10,20 @@ var twitterApi = new Twit({
     strictSSL: true,        // optional
 })
 
-exports.getTweets = (query, count, callback) => {
+exports.getTweets = (query, count, sinceId, callback) => {
     twitterApi.get('search/tweets', {
         q: query,
         tweet_mode: 'extended',
         lang: 'en',
         result_type: 'recent',
         count: count,
-        // since_id: "1235290256569704448"
-    }, callback)
+        since_id: sinceId
+    }, (err, data, response) => {
+        const leanTweets = data.statuses.map(tweet => {return { text: tweet.full_text, tweetIdStr: tweet.id_str, username: tweet.user.name}});
+        callback(leanTweets);
+    });
 }
 
 // TODO: Write a proccess that will run every 6 seconds, getting new tweets (since last id_str), updating DB, and then ES.
+// First find last id_str in DB (if not found, start from 0)
+// The Drinker

@@ -18,7 +18,7 @@ exports.deleteAllTweets = async () => {
 
 exports.insertTweets = async (dataset) => {
     console.log('Inserting tweets');
-    const body = dataset.flatMap(doc => [{ index: { _index: indexName } }, {text: doc.full_text}]);
+    const body = dataset.flatMap(doc => [{ index: { _index: indexName } }, doc]);
     console.log(body);
     console.log('Before bulk insertion');
     const { body: bulkResponse } = await esClient.bulk({ refresh: true, body });
