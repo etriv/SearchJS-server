@@ -1,4 +1,4 @@
-# Twitter API and ElasticSearch Example
+# Twitter API and ElasticSearch Example (The server-side)
 Example of usage of Twitter API and ElasticSearch.
 Back-end: Node.js. Front-end: React.
 
