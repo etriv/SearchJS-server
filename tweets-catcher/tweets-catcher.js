@@ -1,6 +1,6 @@
-const twitter = require('./twitter-manager');
-const esTweets = require('./esTweets-manager');
-const dbTwitter = require('./dbTweets-manager');
+const twitter = require('../twitter-api/twitter-manager');
+const esTweets = require('../elastic-search/esTweets-manager');
+const dbTwitter = require('../database/dbTweets-manager');
 
 exports.start = async () => {
     const twitterQuery = '#javascript AND -filter:replies AND -filter:retweets';

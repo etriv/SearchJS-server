@@ -20,5 +20,9 @@ exports.insertTweets = (tweets) => {
 exports.getLastTweetIdStr = () => {
     return db.select('tweet_id_str').from('tweets').orderBy('id', 'desc').limit(1).then((data) => {
         return data.length > 0 ? data[0].tweet_id_str : '0';
+    })
+    .catch(err => {
+        console.log('Failed getting the last TweetStrId', err);
+        throw err;
     });
 }

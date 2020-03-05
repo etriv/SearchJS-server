@@ -20,19 +20,23 @@ exports.insertTweets = async (tweets) => {
     if (tweets < 1) {
         return;
     }
-    console.log('Inserting tweets to ES');
+
     const body = tweets.flatMap(tweet => [{ index: { _index: indexName } }, tweet]);
-    console.log('Bulk insertion');
+
     const { body: bulkResponse } = await esClient.bulk({ refresh: true, body });
-    console.log('Insertion to ES completed. Counting...');
+
     const { body: count } = await esClient.count({ index: indexName });
-    console.log('Tweets count in ES:', count.count);
+
+    console.log('Tweets count in ES after new insertion:', count.count);
 }
 
-exports.searchTweets = async (words) => {
-    console.log('Searching for a tweet');
+exports.searchTweets = async (words, limit = 100) => {
+    console.log('Searching for tweets');
+
     const { body } = await esClient.search({
         index: indexName,
+        size: limit,
+        sort: {tweetIdStr: 'desc'},
         body: {
             query: {
                 match: {
@@ -46,16 +50,21 @@ exports.searchTweets = async (words) => {
         }
     });
 
-    console.log(body.hits.hits);
+    return body.hits.hits.map(hit => {
+        return {
+            username: hit._source.username,
+            text: hit._source.text
+        }
+    });
 }
 
-exports.printRecentTweets = async (limit) => {
+exports.printTweets = async (limit) => {
     const { body } = await esClient.search({
         index: indexName,
         size: limit,
         body: {
             query: {
-                match_all: { boost: 1.2 }
+                match_all: {}
                 }
             }
         }
