@@ -25,7 +25,3 @@ exports.getTweets = (query, count, sinceId = '0') => {
         });
     });
 }
-
-// TODO: Write a proccess that will run every 6 seconds, getting new tweets (since last id_str), updating DB, and then ES.
-// First find last id_str in DB (if not found, start from 0)
-// The Drinker
