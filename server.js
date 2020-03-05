@@ -1,4 +1,5 @@
 require('dotenv').config();
+var cors = require('cors')
 const express = require('express');
 const tweetsCatcher = require('./tweets-catcher/tweets-catcher');
 const esTweets = require('./elastic-search/esTweets-manager');
@@ -7,6 +8,7 @@ const app = express();
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+app.use(cors());
 
 app.get('/', (req, res) => {
     res.send('Getting root... Yam yam yam!');
@@ -15,20 +17,21 @@ app.get('/', (req, res) => {
 app.get('/tweets', (req, res) => {
     console.log('Request was made with: ', req.query);
 
-    const { searchTerm } = req.query;
+    const { search } = req.query;
 
-    if (searchTerm === undefined) {
+    if (search === undefined) {
         res.status(400).json('Search term is missing');
         return;
     }
     
-    esTweets.searchTweets(searchTerm, 5)
+    esTweets.searchTweets(search, 100)
     .then(tweets => {
         if (tweets.length > 0) {
+            console.log('Returning tweets count:', tweets.length);
             res.status(200).json(tweets);
         }
         else {
-            res.status(200).json('No matching tweets for the search term');
+            res.status(404).json('No matching tweets for the search term');
         }
     })
     .catch(err => {
