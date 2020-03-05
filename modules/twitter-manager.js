@@ -10,17 +10,19 @@ var twitterApi = new Twit({
     strictSSL: true,        // optional
 })
 
-exports.getTweets = (query, count, sinceId, callback) => {
-    twitterApi.get('search/tweets', {
-        q: query,
-        tweet_mode: 'extended',
-        lang: 'en',
-        result_type: 'recent',
-        count: count,
-        since_id: sinceId
-    }, (err, data, response) => {
-        const leanTweets = data.statuses.map(tweet => {return { text: tweet.full_text, tweetIdStr: tweet.id_str, username: tweet.user.name}});
-        callback(leanTweets);
+exports.getTweets = (query, count, sinceId = '0') => {
+    return new Promise(resolve => {
+        twitterApi.get('search/tweets', {
+            q: query,
+            tweet_mode: 'extended',
+            lang: 'en',
+            result_type: 'recent',
+            count: count,
+            since_id: sinceId
+        }, (err, data, response) => {
+            const leanTweets = data.statuses.map(tweet => {return { text: tweet.full_text, tweetIdStr: tweet.id_str, username: tweet.user.name}});
+            resolve(leanTweets);
+        });
     });
 }
 

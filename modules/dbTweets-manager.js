@@ -9,7 +9,6 @@ var db = require('knex')({
 });
 
 exports.insertTweets = (tweets) => {
-    console.log('- Inserting tweets to DB -');
     const tweetsRows = tweets.map(tweet => {return { text: tweet.text, tweet_id_str: tweet.tweetIdStr, username: tweet.username}}).reverse();
     return db('tweets').insert(tweetsRows)
     .catch(err => {
@@ -19,5 +18,7 @@ exports.insertTweets = (tweets) => {
 }
 
 exports.getLastTweetIdStr = () => {
-    return db.select('tweet_id_str').from('tweets').orderBy('id', 'desc').limit(1).then((data) => data[0].tweet_id_str);
+    return db.select('tweet_id_str').from('tweets').orderBy('id', 'desc').limit(1).then((data) => {
+        return data.length > 0 ? data[0].tweet_id_str : '0';
+    });
 }

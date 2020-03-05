@@ -16,15 +16,17 @@ exports.deleteAllTweets = async () => {
     });
 }
 
-exports.insertTweets = async (dataset) => {
-    console.log('Inserting tweets');
-    const body = dataset.flatMap(doc => [{ index: { _index: indexName } }, doc]);
-    console.log(body);
-    console.log('Before bulk insertion');
+exports.insertTweets = async (tweets) => {
+    if (tweets < 1) {
+        return;
+    }
+    console.log('Inserting tweets to ES');
+    const body = tweets.flatMap(tweet => [{ index: { _index: indexName } }, tweet]);
+    console.log('Bulk insertion');
     const { body: bulkResponse } = await esClient.bulk({ refresh: true, body });
-    console.log('Insertion completed. Counting...');
-    const { body: count } = await esClient.count({ index: indexName })
-    console.log('Tweets count', count)
+    console.log('Insertion to ES completed. Counting...');
+    const { body: count } = await esClient.count({ index: indexName });
+    console.log('Tweets count in ES:', count.count);
 }
 
 exports.searchTweets = async (words) => {
@@ -47,12 +49,13 @@ exports.searchTweets = async (words) => {
     console.log(body.hits.hits);
 }
 
-exports.printAllTweets = async () => {
+exports.printRecentTweets = async (limit) => {
     const { body } = await esClient.search({
         index: indexName,
+        size: limit,
         body: {
             query: {
-                match_all: {}
+                match_all: { boost: 1.2 }
                 }
             }
         }

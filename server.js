@@ -1,9 +1,6 @@
 require('dotenv').config();
 const express = require('express');
-const fetch = require('node-fetch');
-const twitter = require('./modules/twitter-manager');
-const esTweets = require('./modules/esTweets-manager');
-const dbTwitter = require('./modules/dbTweets-manager');
+const tweetsCatcher = require('./modules/tweets-catcher');
 
 const app = express();
 
@@ -14,23 +11,7 @@ app.get('/', (req, res) => {
     res.send('Getting root... Yam yam yam!');
 });
 
-let twitterQuery = '#javascript AND -filter:replies AND -filter:retweets';
-twitter.getTweets(twitterQuery, 5, '0', (tweets) => {
-    console.log('Tweets found', tweets.length);
-
-    dbTwitter.insertTweets(tweets).then(() => {
-        dbTwitter.getLastTweetIdStr().then((data) => console.log(data));
-    });
-
-    // esTweets.deleteAllTweets()
-    // .then(() => esTweets.insertTweets(tweets))
-    // .then(() => esTweets.searchTweets('code'))
-    // .then(() => esTweets.printAllTweets());
-});
-
-
-
-
+tweetsCatcher.start();
 
 /////////////////////////////////
 // --- STARTING THE SERVER --- //
