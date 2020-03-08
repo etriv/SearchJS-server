@@ -29,7 +29,7 @@ Link to the front-end (client) project: https://github.com/etriv/SearchJS-client
   ```
 
 ## Design Decisions
-In order to make the most recent tweets searchable (quickly via ElasticSearch), I realised that the main flow of the app will be:
+In order to make the most recent tweets searchable (quickly via ElasticSearch), the main flow of the app is:
 1. Get the most recent relevant tweets from Twitter's API.
 2. Insert the tweets into the database.
 3. Insert the tweets into ElasticSearch.
