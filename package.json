@@ -7,7 +7,7 @@
     "@elastic/elasticsearch": "^7.6.0",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "knex": "^0.20.10",
     "node-fetch": "^2.6.0",
     "nodemon": "^2.0.2",
